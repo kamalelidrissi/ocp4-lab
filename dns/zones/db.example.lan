@@ -1,5 +1,5 @@
 $TTL    604800
-@       IN      SOA     ocp-svc.example.lan. contact.ocp.lan (
+@       IN      SOA     ocp-svc.example.lan. contact.example.lan (
                   1     ; Serial
              604800     ; Refresh
               86400     ; Retry
@@ -8,34 +8,34 @@ $TTL    604800
 )
         IN      NS      ocp-svc
 
-ocp-svc.example.lan.          IN      A       172.20.12.100
+ocp-svc.example.lan.          IN      A       172.20.0.100
 
 ; Temp Bootstrap Node
-ocp-bootstrap.lab.example.lan.        IN      A      172.20.12.200
+ocp-bootstrap.lab.example.lan.        IN      A      172.20.0.200
 
 ; Control Plane Nodes
-ocp-cp-1.lab.example.lan.         IN      A      172.20.12.201
-ocp-cp-2.lab.example.lan.         IN      A      172.20.12.202
-ocp-cp-3.lab.example.lan.         IN      A      172.20.12.203
+ocp-cp-1.lab.example.lan.         IN      A      172.20.0.201
+ocp-cp-2.lab.example.lan.         IN      A      172.20.0.202
+ocp-cp-3.lab.example.lan.         IN      A      172.20.0.203
 
 ; Worker Nodes
-ocp-w-1.lab.example.lan.        IN      A      172.12.20.211
-ocp-w-2.lab.example.lan.        IN      A      172.12.20.212
+ocp-w-1.lab.example.lan.        IN      A      172.12.0.211
+ocp-w-2.lab.example.lan.        IN      A      172.12.0.212
 
 ; OpenShift Internal - Load balancer
-api.lab.example.lan.        IN    A    172.20.12.100
-api-int.lab.example.lan.    IN    A    172.20.12.100
-*.apps.lab.example.lan.     IN    A    172.20.12.100
+api.lab.example.lan.        IN    A    172.20.0.100
+api-int.lab.example.lan.    IN    A    172.20.0.100
+*.apps.lab.example.lan.     IN    A    172.20.0.100
 
 ; ETCD Cluster
-etcd-0.lab.example.lan.    IN    A     172.20.12.201
-etcd-1.lab.example.lan.    IN    A     172.20.12.202
-etcd-2.lab.example.lan.    IN    A     172.20.12.203
+etcd-0.lab.example.lan.    IN    A     172.20.0.201
+etcd-1.lab.example.lan.    IN    A     172.20.0.202
+etcd-2.lab.example.lan.    IN    A     172.20.0.203
 
 ; OpenShift Internal SRV records (cluster name = lab)
 _etcd-server-ssl._tcp.lab.example.lan.    86400     IN    SRV     0    10    2380    etcd-0.lab
 _etcd-server-ssl._tcp.lab.example.lan.    86400     IN    SRV     0    10    2380    etcd-1.lab
 _etcd-server-ssl._tcp.lab.example.lan.    86400     IN    SRV     0    10    2380    etcd-2.lab
 
-oauth-openshift.apps.lab.example.lan.     IN     A     172.20.12.100
-console-openshift-console.apps.lab.example.lan.     IN     A     172.20.12.100
+oauth-openshift.apps.lab.example.lan.     IN     A     172.20.0.100
+console-openshift-console.apps.lab.example.lan.     IN     A     172.20.0.100
