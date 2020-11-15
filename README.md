@@ -132,7 +132,7 @@
 1. Download [config files](https://github.com/ryanhay/ocp4-metal-install) for each of the services
 
    ```bash
-   git clone https://github.com/ryanhay/ocp4-metal-install
+   git clone https://github.com/kamalelidrissi/ocp4-lab
    ```
 
 1. OPTIONAL: Create a file '~/.vimrc' and paste the following (this helps with editing in vim, particularly yaml files):
@@ -153,9 +153,9 @@
 
 1. Set a Static IP for OCP network interface `nmtui-edit ens224` or edit `/etc/sysconfig/network-scripts/ifcfg-ens224`
 
-   - **Address**: 192.168.22.1
+   - **Address**: 172.20.12.100
    - **DNS Server**: 127.0.0.1
-   - **Search domain**: ocp.lan
+   - **Search domain**: example.lan
    - Never use this network for default route
    - Automatically connect
 
@@ -251,9 +251,9 @@
    Confirm dig now sees the correct DNS results by using the DNS Server running locally
 
    ```bash
-   dig ocp.lan
-   # The following should return the answer ocp-bootstrap.lab.ocp.lan from the local server
-   dig -x 192.168.22.200
+   dig example.lan
+   # The following should return the answer ocp-bootstrap.lab.example.lan from the local server
+   dig -x 172.20.12.200
    ```
 
 1. Install & configure DHCP
@@ -267,7 +267,7 @@
    Edit dhcpd.conf from the cloned git repo to have the correct mac address for each host and copy the conf file to the correct location for the DHCP service to use
 
    ```bash
-   \cp ~/ocp4-metal-install/dhcpd.conf /etc/dhcp/dhcpd.conf
+   \cp ~/ocp4-lab/dhcpd.conf /etc/dhcp/dhcpd.conf
    ```
 
    Configure the Firewall
@@ -331,7 +331,7 @@
    Copy HAProxy config
 
    ```bash
-   \cp ~/ocp4-metal-install/haproxy.cfg /etc/haproxy/haproxy.cfg
+   \cp ~/ocp4-lab/haproxy.cfg /etc/haproxy/haproxy.cfg
    ```
 
    Configure the Firewall
@@ -380,7 +380,7 @@
    Export the Share
 
    ```bash
-   echo "/shares/registry  192.168.22.0/24(rw,sync,root_squash,no_subtree_check,no_wdelay)" > /etc/exports
+   echo "/shares/registry  172.20.12.0/24(rw,sync,root_squash,no_subtree_check,no_wdelay)" > /etc/exports
    exportfs -rv
    ```
 
@@ -417,7 +417,7 @@
 1. Copy the install-config.yaml included in the clones repository to the install directory
 
    ```bash
-   cp ~/ocp4-metal-install/install-config.yaml ~/ocp-install
+   cp ~/ocp4-lab/install-config.yaml ~/ocp-install
    ```
 
 1. Update the install-config.yaml with your own pull-secret and ssh key.
@@ -483,19 +483,19 @@
 
    ```bash
    # Bootstrap Node - ocp-bootstrap
-   coreos.inst.install_dev=sda coreos.inst.image_url=http://192.168.22.1:8080/ocp4/rhcos coreos.inst.ignition_url=http://192.168.22.1:8080/ocp4/bootstrap.ign
+   coreos.inst.install_dev=sda coreos.inst.image_url=http://172.20.12.100:8080/ocp4/rhcos coreos.inst.ignition_url=http://172.20.12.100:8080/ocp4/bootstrap.ign
    ```
 
    ```bash
    # Each of the Control Plane Nodes - ocp-cp-\#
-   coreos.inst.install_dev=sda coreos.inst.image_url=http://192.168.22.1:8080/ocp4/rhcos coreos.inst.ignition_url=http://192.168.22.1:8080/ocp4/master.ign
+   coreos.inst.install_dev=sda coreos.inst.image_url=http://172.20.12.100:8080/ocp4/rhcos coreos.inst.ignition_url=http://172.20.12.100:8080/ocp4/master.ign
    ```
 
 1. Power on the ocp-w-\# hosts and select 'Tab' to enter boot configuration. Enter the following configuration:
 
    ```bash
    # Each of the Worker Nodes - ocp-w-\#
-   coreos.inst.install_dev=sda coreos.inst.image_url=http://192.168.22.1:8080/ocp4/rhcos coreos.inst.ignition_url=http://192.168.22.1:8080/ocp4/worker.ign
+   coreos.inst.install_dev=sda coreos.inst.image_url=http://172.20.12.100:8080/ocp4/rhcos coreos.inst.ignition_url=http://172.20.12.100:8080/ocp4/worker.ign
    ```
 
 ## Monitor the Bootstrap Process
@@ -610,7 +610,7 @@
    > This will create a user 'admin' with the password 'password'. To set a different username and password substitue the htpasswd key in the '~/ocp4-metal-install/manifest/oauth-htpasswd.yaml' file with the output of `htpasswd -n -B -b <username> <password>`
 
    ```bash
-   oc apply -f ~/ocp4-metal-install/manifest/oauth-htpasswd.yaml
+   oc apply -f ~/ocp4-lab/manifest/oauth-htpasswd.yaml
    ```
 
 1. Assign the new user (admin) admin permissions
@@ -630,17 +630,17 @@
 1. Append the following to your local workstations `/etc/hosts` file:
 
    > From your local workstation
-   > If you do not want to add an entry for each new service made available on OpenShift you can configure the ocp-svc DNS server to serve externally and create a wildcard entry for \*.apps.lab.ocp.lan
+   > If you do not want to add an entry for each new service made available on OpenShift you can configure the ocp-svc DNS server to serve externally and create a wildcard entry for \*.apps.lab.example.lan
 
    ```bash
    # Open the hosts file
    sudo vi /etc/hosts
 
    # Append the following entries:
-   192.168.0.96 ocp-svc api.lab.ocp.lan console-openshift-console.apps.lab.ocp.lan oauth-openshift.apps.lab.ocp.lan downloads-openshift-console.apps.lab.ocp.lan alertmanager-main-openshift-monitoring.apps.lab.ocp.lan grafana-openshift-monitoring.apps.lab.ocp.lan prometheus-k8s-openshift-monitoring.apps.lab.ocp.lan thanos-querier-openshift-monitoring.apps.lab.ocp.lan
+   172.20.0.96 ocp-svc api.lab.example.lan console-openshift-console.apps.lab.example.lan oauth-openshift.apps.lab.example.lan downloads-openshift-console.apps.lab.example.lan alertmanager-main-openshift-monitoring.apps.lab.example.lan grafana-openshift-monitoring.apps.lab.example.lan prometheus-k8s-openshift-monitoring.apps.lab.example.lan thanos-querier-openshift-monitoring.apps.lab.example.lan
    ```
 
-1. Navigate to the [OpenShift Console URL](https://console-openshift-console.apps.lab.ocp.lan) and log in as the 'admin' user
+1. Navigate to the [OpenShift Console URL](https://console-openshift-console.apps.lab.example.lan) and log in as the 'admin' user
 
    > You will get self signed certificate warnings that you can ignore
    > If you need to login as kubeadmin and need to the password again you can retrieve it with: `cat ~/ocp-install/auth/kubeadmin-password`
@@ -650,7 +650,7 @@
 1. You can collect logs from all cluster hosts by running the following command from the 'ocp-svc' host:
 
    ```bash
-   ./openshift-install gather bootstrap --dir ocp-install --bootstrap=192.168.22.200 --master=192.168.22.201 --master=192.168.22.202 --master=192.168.22.203
+   ./openshift-install gather bootstrap --dir ocp-install --bootstrap=172.20.12.200 --master=172.20.12.201 --master=172.20.12.202 --master=172.20.12.203
    ```
 
 1. Modify the role of the Control Plane Nodes
